@@ -5,6 +5,7 @@
 //! prelude. Heavy optimization work is intentionally left for later phases.
 
 pub mod batch;
+pub mod cache;
 pub mod capabilities;
 pub mod config;
 pub mod error;
@@ -18,6 +19,11 @@ pub mod tokenizer;
 pub use batch::{
     TokenBuffer, TokenOffsets, TokenizedBatch, TokenizedBatchBuilder, TokenizedBatchMetadata,
     TokenizedBatchStats, TokenizedBatchView, TokenizedSampleView,
+};
+pub use cache::{
+    CacheEvictionPolicy, CachePolicy, CacheStorage, CacheTarget, DiskTokenizerCache,
+    MemoryTokenizerCache, TokenizerCacheEntry, TokenizerCacheKey, TokenizerCacheStats,
+    TokenizerFingerprint,
 };
 pub use capabilities::{
     tokenizer_capabilities, BATCH_TOKENIZATION, CHAT_TEMPLATE, HF_TOKENIZER, PADDING,

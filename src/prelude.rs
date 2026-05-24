@@ -4,6 +4,11 @@ pub use crate::batch::{
     TokenBuffer, TokenOffsets, TokenizedBatch, TokenizedBatchBuilder, TokenizedBatchMetadata,
     TokenizedBatchStats, TokenizedBatchView, TokenizedSampleView,
 };
+pub use crate::cache::{
+    CacheEvictionPolicy, CachePolicy, CacheStorage, CacheTarget, DiskTokenizerCache,
+    MemoryTokenizerCache, TokenizerCacheEntry, TokenizerCacheKey, TokenizerCacheStats,
+    TokenizerFingerprint,
+};
 pub use crate::capabilities::*;
 pub use crate::config::*;
 pub use crate::error::*;
