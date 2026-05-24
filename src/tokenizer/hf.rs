@@ -61,6 +61,21 @@ impl HfTokenizer {
         Ok(Self::new(inner, config))
     }
 
+    /// Loads a Hugging Face tokenizer from TuneX config.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error when `tokenizer_path` is missing or the tokenizer
+    /// cannot be loaded.
+    pub fn from_config(config: TokenizerConfig) -> TokenizerResult<Self> {
+        let path = config.tokenizer_path.clone().ok_or_else(|| {
+            TokenizerError::InvalidConfig(
+                "tokenizer_path is required for HfTokenizer::from_config".to_owned(),
+            )
+        })?;
+        Self::from_file_with_config(path, config)
+    }
+
     /// Creates a wrapper from an existing tokenizer.
     pub fn new(mut inner: HfInnerTokenizer, config: TokenizerConfig) -> Self {
         configure_hf_tokenizer(&mut inner, &config);
