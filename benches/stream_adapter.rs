@@ -4,7 +4,8 @@ use bytes::Bytes;
 use criterion::{criterion_group, criterion_main, Criterion, Throughput};
 use tunex_core::types::{RawSample, TokenizedSample};
 use tunex_tokenizer::{
-    RawSampleBatch, TokenizedBatch, TokenizerResult, TokenizerStreamAdapter, TunexTokenizer,
+    QueueCapacity, RawSampleBatch, TokenizedBatch, TokenizerResult, TokenizerStreamAdapter,
+    TunexTokenizer,
 };
 
 const SAMPLE_COUNT: usize = 4096;
@@ -42,6 +43,7 @@ fn bench_stream_adapter(c: &mut Criterion) {
     let input = batch();
     let mut group = c.benchmark_group("stream_adapter");
     group.throughput(Throughput::Elements(SAMPLE_COUNT as u64));
+
     group.bench_function("sync_adapter", |b| {
         b.iter(|| {
             let mut adapter = TokenizerStreamAdapter::new(StreamBenchTokenizer, SAMPLE_COUNT);
@@ -49,6 +51,19 @@ fn bench_stream_adapter(c: &mut Criterion) {
             black_box((output.output_batch_id, output.batch.metadata.tokens));
         });
     });
+
+    group.bench_function("bounded_queue_metadata", |b| {
+        b.iter(|| {
+            let mut adapter = TokenizerStreamAdapter::new(StreamBenchTokenizer, SAMPLE_COUNT)
+                .with_queue_capacity(QueueCapacity {
+                    capacity: 16,
+                    len: 8,
+                });
+            let output = adapter.tokenize_batch(input.clone()).expect("stream");
+            black_box((output.stats.input_batches, output.stats.output_tokens));
+        });
+    });
+
     group.finish();
 }
 

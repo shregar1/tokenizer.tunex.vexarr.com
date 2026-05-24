@@ -19,11 +19,15 @@ tunex-core = { version = "0.1.0", path = "../core.tunex.vexarr.com" }
 criterion = "0.8.2"
 
 [[bench]]
-name = "batch_tokenize"
+name = "hf_single"
 harness = false
 
 [[bench]]
-name = "hf_tokenize"
+name = "hf_batch"
+harness = false
+
+[[bench]]
+name = "parallel_batch"
 harness = false
 
 [[bench]]
@@ -31,9 +35,13 @@ name = "template_format"
 harness = false
 
 [[bench]]
-name = "cache"
+name = "cache_lookup"
 harness = false
 
 [[bench]]
 name = "stream_adapter"
+harness = false
+
+[[bench]]
+name = "end_to_end"
 harness = false
