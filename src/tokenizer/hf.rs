@@ -81,7 +81,13 @@ impl HfTokenizer {
 impl TunexTokenizer for HfTokenizer {
     fn tokenize_sample(&self, sample: &RawSample) -> TokenizerResult<TokenizedSample> {
         self.tokenize_batch(std::slice::from_ref(sample))
-            .map(|batch| batch.samples.into_iter().next().expect("single sample"))
+            .map(|batch| {
+                batch
+                    .to_samples()
+                    .into_iter()
+                    .next()
+                    .expect("single sample")
+            })
     }
 
     fn tokenize_batch(&self, samples: &[RawSample]) -> TokenizerResult<TokenizedBatch> {

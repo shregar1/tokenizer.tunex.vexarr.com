@@ -52,7 +52,8 @@ fn parallel_tokenization_preserves_input_order() {
     assert_eq!(batch.len(), samples.len());
     assert_eq!(stats.workers, 4);
     assert_eq!(stats.chunks, 4);
-    for (index, sample) in batch.samples.iter().enumerate() {
+    let output_samples = batch.to_samples();
+    for (index, sample) in output_samples.iter().enumerate() {
         assert_eq!(sample.id.as_deref(), Some(index.to_string()).as_deref());
     }
 }
@@ -78,5 +79,5 @@ fn same_config_produces_same_tokens() {
     .expect("right")
     .0;
 
-    assert_eq!(left.samples, right.samples);
+    assert_eq!(left.to_samples(), right.to_samples());
 }

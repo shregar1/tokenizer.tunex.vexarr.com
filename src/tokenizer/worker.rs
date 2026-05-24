@@ -4,7 +4,7 @@ use std::time::Instant;
 
 use tunex_core::types::{RawSample, TokenizedSample};
 
-use crate::{TokenizedBatch, TokenizerResult};
+use crate::TokenizerResult;
 
 use super::{SampleChunk, TunexTokenizer, WorkerTokenizationStats};
 
@@ -33,7 +33,9 @@ impl TokenizationWorker {
         T: TunexTokenizer,
     {
         let started = Instant::now();
-        let TokenizedBatch { samples, metadata } = tokenizer.tokenize_batch(samples)?;
+        let batch = tokenizer.tokenize_batch(samples)?;
+        let metadata = batch.metadata.clone();
+        let samples = batch.to_samples();
         let stats = WorkerTokenizationStats {
             worker_id: self.worker_id,
             chunks: 1,

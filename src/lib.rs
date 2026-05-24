@@ -4,6 +4,7 @@
 //! types, Hugging Face tokenizer integration, plugin metadata, and a public
 //! prelude. Heavy optimization work is intentionally left for later phases.
 
+pub mod batch;
 pub mod config;
 pub mod error;
 pub mod metrics;
@@ -11,6 +12,10 @@ pub mod plugin;
 pub mod prelude;
 pub mod tokenizer;
 
+pub use batch::{
+    TokenBuffer, TokenOffsets, TokenizedBatch, TokenizedBatchBuilder, TokenizedBatchMetadata,
+    TokenizedBatchStats, TokenizedBatchView, TokenizedSampleView,
+};
 pub use config::TokenizerConfig;
 pub use error::{TokenizerError, TokenizerResult};
 pub use metrics::TokenizerMetrics;
@@ -18,6 +23,5 @@ pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSIO
 pub use tokenizer::{
     BatchTokenizationPlan, BatchTokenizationScheduler, EncodingAdapter, HfTokenizer,
     ParallelBatchTokenizer, ParallelTokenizationStats, SampleChunk, SpecialTokenConfig,
-    TokenizationWorker, TokenizedBatch, TokenizedBatchMetadata, TokenizedOutput, TunexTokenizer,
-    WorkerTokenizationStats,
+    TokenizationWorker, TokenizedOutput, TunexTokenizer, WorkerTokenizationStats,
 };
