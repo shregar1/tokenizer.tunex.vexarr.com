@@ -17,7 +17,10 @@ pub use batch::{
     TokenBuffer, TokenOffsets, TokenizedBatch, TokenizedBatchBuilder, TokenizedBatchMetadata,
     TokenizedBatchStats, TokenizedBatchView, TokenizedSampleView,
 };
-pub use config::TokenizerConfig;
+pub use config::{
+    ChatTemplateSelection, ConfigValidationError, ConfigValidationReport, PaddingConfig,
+    TemplateConfig, TokenizerConfig, TruncationConfig, ValidateTokenizerConfig,
+};
 pub use error::{TokenizerError, TokenizerResult};
 pub use metrics::TokenizerMetrics;
 pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSION};
