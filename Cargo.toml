@@ -2,6 +2,12 @@
 name = "tunex-tokenizer"
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/shregar1/tokenizer.tunex.vexarr.com"
+description = "High-performance Rust tokenizer engine for TuneX with batch tokenization, SIMD-aware preprocessing, zero-copy text handling, and Hugging Face tokenizer compatibility"
+readme = "README.md"
+keywords = ["llm", "tokenizer", "rust", "training", "ai"]
+categories = ["science", "development-tools"]
 
 [dependencies]
 async-trait = "0.1.89"
