@@ -28,6 +28,12 @@ pub struct TokenizerConfig {
     pub bos_token_id: Option<u32>,
     /// Optional EOS token id appended after HF encoding.
     pub eos_token_id: Option<u32>,
+    /// Chat template name, such as `llama3`, `alpaca`, `sharegpt`, or `openai`.
+    pub chat_template: Option<String>,
+    /// Whether text formatting should add a BOS marker.
+    pub add_bos: bool,
+    /// Whether text formatting should add an EOS marker.
+    pub add_eos: bool,
     /// Target batch size for batch tokenization.
     pub batch_size: usize,
     /// Number of Rayon workers intended for CPU tokenization.
@@ -58,6 +64,9 @@ impl Default for TokenizerConfig {
             pad_token: "[PAD]".to_owned(),
             bos_token_id: None,
             eos_token_id: None,
+            chat_template: None,
+            add_bos: false,
+            add_eos: false,
             batch_size: 1024,
             workers: std::thread::available_parallelism().map_or(1, usize::from),
         }

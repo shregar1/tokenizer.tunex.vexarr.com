@@ -10,6 +10,7 @@ pub mod error;
 pub mod metrics;
 pub mod plugin;
 pub mod prelude;
+pub mod template;
 pub mod tokenizer;
 
 pub use batch::{
@@ -20,6 +21,10 @@ pub use config::TokenizerConfig;
 pub use error::{TokenizerError, TokenizerResult};
 pub use metrics::TokenizerMetrics;
 pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSION};
+pub use template::{
+    ChatMessage, ChatRole, ChatTemplate, ChatTemplateConfig, TemplateFormatter, TemplateKind,
+    TemplateValidationError, TextSpecialTokens,
+};
 pub use tokenizer::{
     BatchTokenizationPlan, BatchTokenizationScheduler, EncodingAdapter, HfTokenizer,
     ParallelBatchTokenizer, ParallelTokenizationStats, SampleChunk, SpecialTokenConfig,

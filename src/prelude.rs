@@ -8,4 +8,8 @@ pub use crate::config::*;
 pub use crate::error::*;
 pub use crate::metrics::*;
 pub use crate::plugin::*;
+pub use crate::template::{
+    ChatMessage, ChatRole, ChatTemplate, ChatTemplateConfig, TemplateFormatter, TemplateKind,
+    TemplateValidationError, TextSpecialTokens,
+};
 pub use crate::tokenizer::*;
