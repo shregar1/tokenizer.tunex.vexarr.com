@@ -32,6 +32,24 @@ pub enum TokenizerError {
     /// Parallel tokenization failed.
     #[error("parallel tokenization failed: {0}")]
     Parallel(String),
+    /// Streaming adapter failed while processing a sample.
+    #[error("streaming tokenization failed in input batch {input_batch_id} at sample {sample_index}: {source}")]
+    StreamSample {
+        /// Input raw sample batch id.
+        input_batch_id: u64,
+        /// Sample index inside the input batch.
+        sample_index: usize,
+        /// Source tokenizer error.
+        source: Box<TokenizerError>,
+    },
+    /// Streaming adapter failed while processing a batch.
+    #[error("streaming tokenization failed in input batch {input_batch_id}: {source}")]
+    StreamBatch {
+        /// Input raw sample batch id.
+        input_batch_id: u64,
+        /// Source tokenizer error.
+        source: Box<TokenizerError>,
+    },
 }
 
 impl TokenizerError {

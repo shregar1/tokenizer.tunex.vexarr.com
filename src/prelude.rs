@@ -15,6 +15,11 @@ pub use crate::error::*;
 pub use crate::metrics::*;
 pub use crate::plugin::*;
 pub use crate::source::*;
+pub use crate::stream::{
+    AsyncTokenizationStream, BackpressureAction, BackpressureHook, BackpressureState,
+    QueueCapacity, RawSampleBatch, TokenizedBatchEnvelope, TokenizerStreamAdapter,
+    TokenizerStreamStats,
+};
 pub use crate::template::{
     ChatMessage, ChatRole, ChatTemplate, ChatTemplateConfig, TemplateFormatter, TemplateKind,
     TemplateValidationError, TextSpecialTokens,

@@ -13,6 +13,7 @@ pub mod metrics;
 pub mod plugin;
 pub mod prelude;
 pub mod source;
+pub mod stream;
 pub mod template;
 pub mod tokenizer;
 
@@ -37,6 +38,11 @@ pub use error::{TokenizerError, TokenizerResult};
 pub use metrics::TokenizerMetrics;
 pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSION};
 pub use source::TokenizerSource;
+pub use stream::{
+    AsyncTokenizationStream, BackpressureAction, BackpressureHook, BackpressureState,
+    QueueCapacity, RawSampleBatch, TokenizedBatchEnvelope, TokenizerStreamAdapter,
+    TokenizerStreamStats,
+};
 pub use template::{
     ChatMessage, ChatRole, ChatTemplate, ChatTemplateConfig, TemplateFormatter, TemplateKind,
     TemplateValidationError, TextSpecialTokens,
