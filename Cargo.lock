@@ -1245,6 +1245,7 @@ dependencies = [
  "async-trait",
  "bytes",
  "criterion",
+ "metrics",
  "rayon",
  "serde",
  "smallvec",

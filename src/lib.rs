@@ -35,7 +35,12 @@ pub use config::{
     TemplateConfig, TokenizerConfig, TruncationConfig, ValidateTokenizerConfig,
 };
 pub use error::{TokenizerError, TokenizerResult};
-pub use metrics::TokenizerMetrics;
+pub use metrics::{
+    batch_tokenize_span, cache_lookup_span, cache_store_span, parallel_tokenize_span,
+    stream_consume_span, stream_emit_span, template_format_span, tokenizer_load_span,
+    MetricsSnapshot, TokenizerCounters, TokenizerLatency, TokenizerMetrics,
+    TokenizerMetricsReporter, TokenizerThroughput,
+};
 pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSION};
 pub use source::TokenizerSource;
 pub use stream::{
