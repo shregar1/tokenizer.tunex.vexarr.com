@@ -13,6 +13,7 @@ pub mod error;
 pub mod metrics;
 pub mod plugin;
 pub mod prelude;
+pub mod resume;
 pub mod source;
 pub mod stream;
 pub mod template;
@@ -48,6 +49,10 @@ pub use metrics::{
     TokenizerMetricsReporter, TokenizerThroughput,
 };
 pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSION};
+pub use resume::{
+    ReplayPlan, ReplayResult, ReplayVerifier, ResumeValidationError, ResumeValidationReport,
+    TokenizerCursor, TokenizerResumeSnapshot, TokenizerResumeState,
+};
 pub use source::TokenizerSource;
 pub use stream::{
     AsyncTokenizationStream, BackpressureAction, BackpressureHook, BackpressureState,

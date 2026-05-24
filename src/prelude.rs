@@ -19,6 +19,10 @@ pub use crate::distributed::{
 pub use crate::error::*;
 pub use crate::metrics::*;
 pub use crate::plugin::*;
+pub use crate::resume::{
+    ReplayPlan, ReplayResult, ReplayVerifier, ResumeValidationError, ResumeValidationReport,
+    TokenizerCursor, TokenizerResumeSnapshot, TokenizerResumeState,
+};
 pub use crate::source::*;
 pub use crate::stream::{
     AsyncTokenizationStream, BackpressureAction, BackpressureHook, BackpressureState,
