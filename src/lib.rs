@@ -5,17 +5,23 @@
 //! prelude. Heavy optimization work is intentionally left for later phases.
 
 pub mod batch;
+pub mod capabilities;
 pub mod config;
 pub mod error;
 pub mod metrics;
 pub mod plugin;
 pub mod prelude;
+pub mod source;
 pub mod template;
 pub mod tokenizer;
 
 pub use batch::{
     TokenBuffer, TokenOffsets, TokenizedBatch, TokenizedBatchBuilder, TokenizedBatchMetadata,
     TokenizedBatchStats, TokenizedBatchView, TokenizedSampleView,
+};
+pub use capabilities::{
+    tokenizer_capabilities, BATCH_TOKENIZATION, CHAT_TEMPLATE, HF_TOKENIZER, PADDING,
+    PARALLEL_TOKENIZATION, SPECIAL_TOKENS, TOKENIZER_CAPABILITY_NAMES, TRUNCATION,
 };
 pub use config::{
     ChatTemplateSelection, ConfigValidationError, ConfigValidationReport, PaddingConfig,
@@ -24,6 +30,7 @@ pub use config::{
 pub use error::{TokenizerError, TokenizerResult};
 pub use metrics::TokenizerMetrics;
 pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSION};
+pub use source::TokenizerSource;
 pub use template::{
     ChatMessage, ChatRole, ChatTemplate, ChatTemplateConfig, TemplateFormatter, TemplateKind,
     TemplateValidationError, TextSpecialTokens,

@@ -1,7 +1,9 @@
 use tokenizers::{Encoding, Token};
 use tunex_core::{plugin::TunexPlugin, types::TokenizedSample};
 use tunex_tokenizer::{
-    EncodingAdapter, SpecialTokenConfig, TokenizedBatch, TokenizerPlugin, TOKENIZER_PLUGIN_NAME,
+    EncodingAdapter, SpecialTokenConfig, TokenizedBatch, TokenizerPlugin, BATCH_TOKENIZATION,
+    CHAT_TEMPLATE, HF_TOKENIZER, PADDING, PARALLEL_TOKENIZATION, SPECIAL_TOKENS,
+    TOKENIZER_CAPABILITY_NAMES, TOKENIZER_PLUGIN_NAME, TRUNCATION,
 };
 
 #[test]
@@ -20,10 +22,27 @@ fn tokenizer_plugin_exposes_core_metadata() {
     let metadata = plugin.metadata();
 
     assert_eq!(metadata.id.as_str(), TOKENIZER_PLUGIN_NAME);
-    assert!(plugin
-        .capabilities()
-        .iter()
-        .any(|capability| capability.as_str() == "hf-tokenizer"));
+    assert_eq!(metadata.name.as_str(), TOKENIZER_PLUGIN_NAME);
+    assert_eq!(metadata.kind, tunex_core::plugin::PluginKind::Tokenizer);
+
+    for expected in [
+        HF_TOKENIZER,
+        BATCH_TOKENIZATION,
+        PARALLEL_TOKENIZATION,
+        CHAT_TEMPLATE,
+        SPECIAL_TOKENS,
+        TRUNCATION,
+        PADDING,
+    ] {
+        assert!(plugin
+            .capabilities()
+            .iter()
+            .any(|capability| capability.as_str() == expected));
+    }
+    assert_eq!(
+        plugin.capabilities().len(),
+        TOKENIZER_CAPABILITY_NAMES.len()
+    );
 }
 
 #[test]

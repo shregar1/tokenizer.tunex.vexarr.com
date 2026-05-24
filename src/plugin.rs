@@ -5,6 +5,8 @@ use tunex_core::plugin::{
     PluginVersion, TunexPlugin,
 };
 
+use crate::capabilities::tokenizer_capabilities;
+
 /// Stable TuneX tokenizer plugin name.
 pub const TOKENIZER_PLUGIN_NAME: &str = "tunex-tokenizer-hf";
 
@@ -22,13 +24,7 @@ impl TokenizerPlugin {
     #[must_use]
     pub fn new() -> Self {
         Self {
-            capabilities: vec![
-                PluginCapability::new("hf-tokenizer"),
-                PluginCapability::new("batch-tokenization"),
-                PluginCapability::new("rayon-parallel"),
-                PluginCapability::new("zero-copy-input-bytes"),
-                PluginCapability::new("simd-aware-preprocessing"),
-            ],
+            capabilities: tokenizer_capabilities(),
         }
     }
 }

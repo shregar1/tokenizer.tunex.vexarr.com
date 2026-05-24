@@ -41,6 +41,23 @@ impl ConfigValidationReport {
     }
 }
 
+impl std::fmt::Display for ConfigValidationReport {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.errors.is_empty() {
+            return formatter.write_str("configuration is valid");
+        }
+
+        for (index, error) in self.errors.iter().enumerate() {
+            if index > 0 {
+                formatter.write_str("; ")?;
+            }
+            write!(formatter, "{}: {}", error.path, error.message)?;
+        }
+
+        Ok(())
+    }
+}
+
 /// Validation contract for tokenizer configs.
 pub trait ValidateTokenizerConfig {
     /// Validates this config.
