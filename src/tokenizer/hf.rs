@@ -3,15 +3,18 @@
 use std::{path::Path, sync::Mutex};
 
 use async_trait::async_trait;
-use rayon::prelude::*;
-use tokenizers::Tokenizer as HfInnerTokenizer;
+use tokenizers::{PaddingParams, PaddingStrategy, Tokenizer as HfInnerTokenizer, TruncationParams};
 use tunex_core::{
     traits::Tokenizer,
     types::{RawSample, TokenizedSample},
     TunexResult,
 };
 
-use crate::{config::TokenizerConfig, TokenizedBatch, TokenizerError, TokenizerResult};
+use crate::{
+    config::TokenizerConfig,
+    tokenizer::{EncodingAdapter, SpecialTokenConfig},
+    TokenizedBatch, TokenizerError, TokenizerResult,
+};
 
 /// TuneX tokenizer convenience trait for synchronous batch calls.
 pub trait TunexTokenizer: Send + Sync {
@@ -42,42 +45,64 @@ impl HfTokenizer {
         Ok(Self::new(inner, TokenizerConfig::from_path(path)))
     }
 
+    /// Loads a Hugging Face tokenizer JSON file with explicit TuneX config.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error when the tokenizer cannot be loaded or configured.
+    pub fn from_file_with_config(
+        path: impl AsRef<Path>,
+        mut config: TokenizerConfig,
+    ) -> TokenizerResult<Self> {
+        let path = path.as_ref();
+        let inner = HfInnerTokenizer::from_file(path)
+            .map_err(|error| TokenizerError::Hf(error.to_string()))?;
+        config.tokenizer_path = Some(path.to_path_buf());
+        Ok(Self::new(inner, config))
+    }
+
     /// Creates a wrapper from an existing tokenizer.
-    #[must_use]
-    pub fn new(inner: HfInnerTokenizer, config: TokenizerConfig) -> Self {
+    pub fn new(mut inner: HfInnerTokenizer, config: TokenizerConfig) -> Self {
+        configure_hf_tokenizer(&mut inner, &config);
         Self {
             inner,
             config,
             next_batch_id: Mutex::new(0),
         }
     }
+
+    /// Returns tokenizer config.
+    #[must_use]
+    pub const fn config(&self) -> &TokenizerConfig {
+        &self.config
+    }
 }
 
 impl TunexTokenizer for HfTokenizer {
     fn tokenize_sample(&self, sample: &RawSample) -> TokenizerResult<TokenizedSample> {
-        let text = std::str::from_utf8(&sample.payload).map_err(|_| TokenizerError::InvalidUtf8)?;
-        let encoding = self
-            .inner
-            .encode(text, self.config.add_special_tokens)
-            .map_err(|error| TokenizerError::Hf(error.to_string()))?;
-        let mut token_ids = encoding.get_ids().to_vec();
-
-        if let Some(max_seq_len) = self.config.max_seq_len {
-            if self.config.truncate && token_ids.len() > max_seq_len {
-                token_ids.truncate(max_seq_len);
-            }
-        }
-
-        let mut output = TokenizedSample::new(token_ids);
-        output.id = sample.id.clone();
-        Ok(output)
+        self.tokenize_batch(std::slice::from_ref(sample))
+            .map(|batch| batch.samples.into_iter().next().expect("single sample"))
     }
 
     fn tokenize_batch(&self, samples: &[RawSample]) -> TokenizerResult<TokenizedBatch> {
-        let outputs = samples
-            .par_iter()
-            .map(|sample| self.tokenize_sample(sample))
+        let texts = samples
+            .iter()
+            .map(sample_text)
             .collect::<TokenizerResult<Vec<_>>>()?;
+        let encodings = self
+            .inner
+            .encode_batch(texts, self.config.add_special_tokens)
+            .map_err(|error| TokenizerError::Hf(error.to_string()))?;
+        let adapter = EncodingAdapter::new(
+            SpecialTokenConfig::new(self.config.bos_token_id, self.config.eos_token_id),
+            self.config.max_seq_len,
+            self.config.truncate,
+        );
+        let outputs = samples
+            .iter()
+            .zip(encodings.iter())
+            .map(|(sample, encoding)| adapter.convert(sample.id.clone(), encoding))
+            .collect();
         let mut batch_id = self
             .next_batch_id
             .lock()
@@ -93,5 +118,35 @@ impl Tokenizer for HfTokenizer {
     async fn tokenize(&self, sample: &RawSample) -> TunexResult<TokenizedSample> {
         self.tokenize_sample(sample)
             .map_err(tunex_core::TunexError::from)
+    }
+}
+
+fn sample_text(sample: &RawSample) -> TokenizerResult<&str> {
+    std::str::from_utf8(&sample.payload).map_err(|_| TokenizerError::InvalidUtf8)
+}
+
+fn configure_hf_tokenizer(tokenizer: &mut HfInnerTokenizer, config: &TokenizerConfig) {
+    if config.truncate {
+        if let Some(max_seq_len) = config.max_seq_len {
+            let _ = tokenizer.with_truncation(Some(TruncationParams {
+                max_length: max_seq_len,
+                ..TruncationParams::default()
+            }));
+        }
+    } else {
+        let _ = tokenizer.with_truncation(None);
+    }
+
+    if config.padding {
+        tokenizer.with_padding(Some(PaddingParams {
+            strategy: config
+                .pad_to_length
+                .map_or(PaddingStrategy::BatchLongest, PaddingStrategy::Fixed),
+            pad_id: config.pad_token_id,
+            pad_token: config.pad_token.clone(),
+            ..PaddingParams::default()
+        }));
+    } else {
+        tokenizer.with_padding(None);
     }
 }

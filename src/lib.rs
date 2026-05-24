@@ -16,5 +16,6 @@ pub use error::{TokenizerError, TokenizerResult};
 pub use metrics::TokenizerMetrics;
 pub use plugin::{TokenizerPlugin, TOKENIZER_PLUGIN_NAME, TOKENIZER_PLUGIN_VERSION};
 pub use tokenizer::{
-    HfTokenizer, TokenizedBatch, TokenizedBatchMetadata, TokenizedOutput, TunexTokenizer,
+    EncodingAdapter, HfTokenizer, SpecialTokenConfig, TokenizedBatch, TokenizedBatchMetadata,
+    TokenizedOutput, TunexTokenizer,
 };

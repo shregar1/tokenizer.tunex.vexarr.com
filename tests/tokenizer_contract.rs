@@ -1,5 +1,8 @@
+use tokenizers::{Encoding, Token};
 use tunex_core::{plugin::TunexPlugin, types::TokenizedSample};
-use tunex_tokenizer::{TokenizedBatch, TokenizerPlugin, TOKENIZER_PLUGIN_NAME};
+use tunex_tokenizer::{
+    EncodingAdapter, SpecialTokenConfig, TokenizedBatch, TokenizerPlugin, TOKENIZER_PLUGIN_NAME,
+};
 
 #[test]
 fn tokenized_batch_records_sample_and_token_counts() {
@@ -21,4 +24,39 @@ fn tokenizer_plugin_exposes_core_metadata() {
         .capabilities()
         .iter()
         .any(|capability| capability.as_str() == "hf-tokenizer"));
+}
+
+#[test]
+fn encoding_adapter_applies_bos_eos_and_truncation() {
+    let encoding = Encoding::from_tokens(
+        vec![
+            Token::new(10, "hello".to_owned(), (0, 5)),
+            Token::new(11, "world".to_owned(), (6, 11)),
+        ],
+        0,
+    );
+    let adapter = EncodingAdapter::new(SpecialTokenConfig::new(Some(1), Some(2)), Some(3), true);
+
+    let sample = adapter.convert(Some("sample-1".to_owned()), &encoding);
+
+    assert_eq!(sample.id.as_deref(), Some("sample-1"));
+    assert_eq!(sample.token_ids, vec![1, 10, 11]);
+    assert_eq!(sample.attention_mask, vec![1, 1, 1]);
+}
+
+#[test]
+fn encoding_adapter_keeps_full_sequence_without_truncation() {
+    let encoding = Encoding::from_tokens(
+        vec![
+            Token::new(10, "hello".to_owned(), (0, 5)),
+            Token::new(11, "world".to_owned(), (6, 11)),
+        ],
+        0,
+    );
+    let adapter = EncodingAdapter::new(SpecialTokenConfig::new(Some(1), Some(2)), Some(3), false);
+
+    let sample = adapter.convert(None, &encoding);
+
+    assert_eq!(sample.token_ids, vec![1, 10, 11, 2]);
+    assert_eq!(sample.attention_mask, vec![1, 1, 1, 1]);
 }

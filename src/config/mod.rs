@@ -16,6 +16,18 @@ pub struct TokenizerConfig {
     pub truncate: bool,
     /// Whether to include special tokens.
     pub add_special_tokens: bool,
+    /// Whether to pad batch encodings.
+    pub padding: bool,
+    /// Optional fixed pad length. Batch-longest padding is used when omitted.
+    pub pad_to_length: Option<usize>,
+    /// Padding token id.
+    pub pad_token_id: u32,
+    /// Padding token string.
+    pub pad_token: String,
+    /// Optional BOS token id inserted after HF encoding.
+    pub bos_token_id: Option<u32>,
+    /// Optional EOS token id appended after HF encoding.
+    pub eos_token_id: Option<u32>,
     /// Target batch size for batch tokenization.
     pub batch_size: usize,
     /// Number of Rayon workers intended for CPU tokenization.
@@ -40,6 +52,12 @@ impl Default for TokenizerConfig {
             max_seq_len: None,
             truncate: true,
             add_special_tokens: true,
+            padding: false,
+            pad_to_length: None,
+            pad_token_id: 0,
+            pad_token: "[PAD]".to_owned(),
+            bos_token_id: None,
+            eos_token_id: None,
             batch_size: 1024,
             workers: std::thread::available_parallelism().map_or(1, usize::from),
         }
