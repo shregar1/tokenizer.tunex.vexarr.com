@@ -11,6 +11,11 @@ pub use crate::cache::{
 };
 pub use crate::capabilities::*;
 pub use crate::config::*;
+pub use crate::distributed::{
+    BatchRoute, BatchRouter, DistributedTokenBatch, DistributedTokenizerEpoch,
+    DistributedTokenizerRank, DistributedTokenizerWorker, RoutingStrategy, SyncBarrier,
+    SyncCheckpoint, SyncHook, TokenizerShard, TokenizerWorkerAssignment, TokenizerWorkerId,
+};
 pub use crate::error::*;
 pub use crate::metrics::*;
 pub use crate::plugin::*;

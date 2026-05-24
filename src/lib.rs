@@ -8,6 +8,7 @@ pub mod batch;
 pub mod cache;
 pub mod capabilities;
 pub mod config;
+pub mod distributed;
 pub mod error;
 pub mod metrics;
 pub mod plugin;
@@ -33,6 +34,11 @@ pub use capabilities::{
 pub use config::{
     ChatTemplateSelection, ConfigValidationError, ConfigValidationReport, PaddingConfig,
     TemplateConfig, TokenizerConfig, TruncationConfig, ValidateTokenizerConfig,
+};
+pub use distributed::{
+    BatchRoute, BatchRouter, DistributedTokenBatch, DistributedTokenizerEpoch,
+    DistributedTokenizerRank, DistributedTokenizerWorker, RoutingStrategy, SyncBarrier,
+    SyncCheckpoint, SyncHook, TokenizerShard, TokenizerWorkerAssignment, TokenizerWorkerId,
 };
 pub use error::{TokenizerError, TokenizerResult};
 pub use metrics::{
