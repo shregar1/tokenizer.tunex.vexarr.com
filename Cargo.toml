@@ -13,3 +13,10 @@ thiserror = "2.0.18"
 tokenizers = "0.23.1"
 tracing = "0.1.44"
 tunex-core = { version = "0.1.0", path = "../core.tunex.vexarr.com" }
+
+[dev-dependencies]
+criterion = "0.8.2"
+
+[[bench]]
+name = "batch_tokenize"
+harness = false

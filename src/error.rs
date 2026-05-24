@@ -29,6 +29,9 @@ pub enum TokenizerError {
     /// Configuration is invalid.
     #[error("invalid tokenizer config: {0}")]
     InvalidConfig(String),
+    /// Parallel tokenization failed.
+    #[error("parallel tokenization failed: {0}")]
+    Parallel(String),
 }
 
 impl TokenizerError {
